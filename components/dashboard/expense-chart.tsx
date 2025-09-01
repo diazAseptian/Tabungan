@@ -35,7 +35,7 @@ export function ExpenseChart({ userId }: ExpenseChartProps) {
           .eq('user_id', userId);
 
         if (expenses) {
-          const categoryTotals = expenses.reduce((acc: Record<string, any>, expense) => {
+          const categoryTotals = expenses.reduce((acc: Record<string, any>, expense: any) => {
             const categoryName = expense.categories?.name || 'Tanpa Kategori';
             const categoryColor = expense.categories?.color || '#6B7280';
             

@@ -52,8 +52,8 @@ export function BalanceChart({ userId }: BalanceChartProps) {
             .gte('date', monthStart)
             .lte('date', monthEnd);
           
-          const monthlyIncome = incomeData?.reduce((sum, item) => sum + Number(item.amount), 0) || 0;
-          const monthlyExpenses = expensesData?.reduce((sum, item) => sum + Number(item.amount), 0) || 0;
+          const monthlyIncome = incomeData?.reduce((sum, item: any) => sum + Number(item.amount), 0) || 0;
+          const monthlyExpenses = expensesData?.reduce((sum, item: any) => sum + Number(item.amount), 0) || 0;
           
           chartData.push({
             month: format(month, 'MMM yyyy'),

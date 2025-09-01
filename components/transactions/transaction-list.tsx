@@ -16,7 +16,7 @@ interface TransactionListProps {
 }
 
 export function TransactionList({ type, userId }: TransactionListProps) {
-  const [transactions, setTransactions] = useState<(Income | Expense)[]>([]);
+  const [transactions, setTransactions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [formOpen, setFormOpen] = useState(false);
   const [editTransaction, setEditTransaction] = useState<any>(null);
@@ -32,13 +32,16 @@ export function TransactionList({ type, userId }: TransactionListProps) {
         .from(type === 'income' ? 'income' : 'expenses')
         .select(`
           *,
-          categories (
+          categories!category_id (
+            id,
             name,
             color
           )
         `)
         .eq('user_id', userId)
         .order('date', { ascending: false });
+
+      console.log('Fetched data:', data);
 
       if (data) {
         setTransactions(data);
@@ -127,14 +130,14 @@ export function TransactionList({ type, userId }: TransactionListProps) {
                     <div className="flex justify-between items-start">
                       <div className="space-y-1 flex-1">
                         <div className="flex items-center space-x-2">
-                          {transaction.category && (
+                          {transaction.categories && (
                             <div 
                               className="w-3 h-3 rounded-full"
-                              style={{ backgroundColor: transaction.category.color }}
+                              style={{ backgroundColor: transaction.categories.color }}
                             />
                           )}
                           <span className="font-medium">
-                            {transaction.category?.name || 'Tanpa Kategori'}
+                            {transaction.categories?.name || 'Tanpa Kategori'}
                           </span>
                         </div>
                         <div className="text-2xl font-bold text-emerald-600">
