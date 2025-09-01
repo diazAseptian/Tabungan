@@ -28,10 +28,12 @@ export default function Dashboard() {
 
         <StatsCards stats={stats} loading={statsLoading} />
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <ExpenseChart userId={user?.id} />
-          <BalanceChart userId={user?.id} />
-        </div>
+        {user?.id && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <ExpenseChart userId={user.id} />
+            <BalanceChart userId={user.id} />
+          </div>
+        )}
       </motion.div>
     </DashboardLayout>
   );
