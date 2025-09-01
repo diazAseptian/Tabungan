@@ -67,7 +67,7 @@ export function GoalForm({ open, onOpenChange, userId, goal, onSuccess }: GoalFo
   const onSubmit = async (data: GoalForm) => {
     setLoading(true);
     try {
-      const payload = {
+      const payload: any = {
         user_id: userId,
         name: data.name,
         target_amount: data.targetAmount,
