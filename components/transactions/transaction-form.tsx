@@ -15,7 +15,7 @@ import { Category } from '@/types';
 import { motion } from 'framer-motion';
 
 const transactionSchema = z.object({
-  amount: z.string().min(1, 'Jumlah harus diisi').transform((val) => parseFloat(val)),
+  amount: z.string().min(1, 'Jumlah harus diisi'),
   categoryId: z.string().min(1, 'Kategori harus dipilih'),
   source: z.string().optional(),
   description: z.string().optional(),
@@ -98,7 +98,7 @@ export function TransactionForm({
       const payload = {
         user_id: userId,
         category_id: data.categoryId,
-        amount: data.amount,
+        amount: parseFloat(data.amount),
         description: data.description,
         date: data.date,
         ...(type === 'income' && { source: data.source }),
