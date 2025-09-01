@@ -8,7 +8,7 @@ import { supabase } from '@/lib/supabase';
 import { Goal } from '@/types';
 import { Edit, Trash2, Plus, Target } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { GoalForm } from './goal-form';
+import GoalForm from './goal-form';
 import { format } from 'date-fns';
 
 interface GoalsListProps {
