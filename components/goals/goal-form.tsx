@@ -15,8 +15,8 @@ import { useState } from 'react';
 
 const goalSchema = z.object({
   name: z.string().min(1, 'Nama target harus diisi'),
-  targetAmount: z.string().min(1, 'Target jumlah harus diisi').transform((val) => parseFloat(val)),
-  currentAmount: z.string().transform((val) => val ? parseFloat(val) : 0),
+  targetAmount: z.number().min(1, 'Target jumlah harus diisi'),
+  currentAmount: z.number().min(0, 'Jumlah saat ini tidak boleh negatif'),
   deadline: z.string().optional(),
 });
 
@@ -38,8 +38,8 @@ export function GoalForm({ open, onOpenChange, userId, goal, onSuccess }: GoalFo
     resolver: zodResolver(goalSchema),
     defaultValues: {
       name: '',
-      targetAmount: '',
-      currentAmount: '0',
+      targetAmount: 0,
+      currentAmount: 0,
       deadline: '',
     },
   });
@@ -49,15 +49,15 @@ export function GoalForm({ open, onOpenChange, userId, goal, onSuccess }: GoalFo
       if (isEdit && goal) {
         form.reset({
           name: goal.name,
-          targetAmount: goal.target_amount.toString(),
-          currentAmount: goal.current_amount.toString(),
+          targetAmount: Number(goal.target_amount),
+          currentAmount: Number(goal.current_amount),
           deadline: goal.deadline || '',
         });
       } else {
         form.reset({
           name: '',
-          targetAmount: '',
-          currentAmount: '0',
+          targetAmount: 0,
+          currentAmount: 0,
           deadline: '',
         });
       }

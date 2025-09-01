@@ -3,9 +3,11 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/lib/supabase';
 import { Income, Expense } from '@/types';
-import { Edit, Trash2, Plus } from 'lucide-react';
+import { Edit, Trash2, Plus, Filter, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TransactionForm } from './transaction-form';
 import { format } from 'date-fns';
@@ -17,13 +19,45 @@ interface TransactionListProps {
 
 export function TransactionList({ type, userId }: TransactionListProps) {
   const [transactions, setTransactions] = useState<any[]>([]);
+  const [filteredTransactions, setFilteredTransactions] = useState<any[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [formOpen, setFormOpen] = useState(false);
   const [editTransaction, setEditTransaction] = useState<any>(null);
 
+  const [selectedCategory, setSelectedCategory] = useState('all');
+
   useEffect(() => {
     fetchTransactions();
+    fetchCategories();
   }, [type, userId]);
+
+  useEffect(() => {
+    applyFilters();
+  }, [transactions, selectedCategory]);
+
+  const fetchCategories = async () => {
+    const { data } = await supabase
+      .from('categories')
+      .select('*')
+      .eq('user_id', userId)
+      .eq('type', type)
+      .order('name');
+    
+    if (data) {
+      setCategories(data);
+    }
+  };
+
+  const applyFilters = () => {
+    let filtered = [...transactions];
+
+    if (selectedCategory && selectedCategory !== 'all') {
+      filtered = filtered.filter(t => t.category_id === selectedCategory);
+    }
+
+    setFilteredTransactions(filtered);
+  };
 
   const fetchTransactions = async () => {
     setLoading(true);
@@ -45,6 +79,7 @@ export function TransactionList({ type, userId }: TransactionListProps) {
 
       if (data) {
         setTransactions(data);
+        setFilteredTransactions(data);
       }
     } catch (error) {
       console.error('Error fetching transactions:', error);
@@ -91,10 +126,31 @@ export function TransactionList({ type, userId }: TransactionListProps) {
         <h2 className="text-2xl font-bold">
           {type === 'income' ? 'Pemasukan' : 'Pengeluaran'}
         </h2>
-        <Button onClick={() => setFormOpen(true)} className="flex items-center space-x-2">
-          <Plus className="h-4 w-4" />
-          <span>Tambah</span>
-        </Button>
+        <div className="flex items-center space-x-2">
+          <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+            <SelectTrigger className="w-48">
+              <SelectValue placeholder="Semua kategori" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Semua kategori</SelectItem>
+              {categories.map((cat) => (
+                <SelectItem key={cat.id} value={cat.id}>
+                  <div className="flex items-center space-x-2">
+                    <div 
+                      className="w-3 h-3 rounded-full"
+                      style={{ backgroundColor: cat.color }}
+                    />
+                    <span>{cat.name}</span>
+                  </div>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Button onClick={() => setFormOpen(true)} className="flex items-center space-x-2">
+            <Plus className="h-4 w-4" />
+            <span>Tambah</span>
+          </Button>
+        </div>
       </div>
 
       {loading ? (
@@ -117,7 +173,7 @@ export function TransactionList({ type, userId }: TransactionListProps) {
       ) : (
         <AnimatePresence>
           <div className="grid gap-4">
-            {transactions.map((transaction, index) => (
+            {filteredTransactions.map((transaction, index) => (
               <motion.div
                 key={transaction.id}
                 initial={{ opacity: 0, y: 20 }}
@@ -183,7 +239,7 @@ export function TransactionList({ type, userId }: TransactionListProps) {
         </AnimatePresence>
       )}
 
-      {!loading && transactions.length === 0 && (
+      {!loading && filteredTransactions.length === 0 && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
