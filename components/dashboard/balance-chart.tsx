@@ -100,54 +100,27 @@ export function BalanceChart({ userId }: BalanceChartProps) {
           <CardTitle>Perkembangan Saldo Bulanan</CardTitle>
         </CardHeader>
         <CardContent>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={data}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis 
-                tickFormatter={(value) => 
-                  new Intl.NumberFormat('id-ID', {
-                    style: 'currency',
-                    currency: 'IDR',
-                    notation: 'compact',
-                    maximumFractionDigits: 0,
-                  }).format(value)
-                }
-              />
-              <Tooltip 
-                formatter={(value: number, name: string) => [
-                  new Intl.NumberFormat('id-ID', {
-                    style: 'currency',
-                    currency: 'IDR',
-                    minimumFractionDigits: 0,
-                  }).format(value),
-                  name === 'income' ? 'Pemasukan' : 
-                  name === 'expenses' ? 'Pengeluaran' : 'Saldo'
-                ]}
-              />
-              <Line 
-                type="monotone" 
-                dataKey="income" 
-                stroke="#10B981" 
-                strokeWidth={2} 
-                dot={{ fill: '#10B981', strokeWidth: 2, r: 4 }}
-              />
-              <Line 
-                type="monotone" 
-                dataKey="expenses" 
-                stroke="#EF4444" 
-                strokeWidth={2}
-                dot={{ fill: '#EF4444', strokeWidth: 2, r: 4 }}
-              />
-              <Line 
-                type="monotone" 
-                dataKey="balance" 
-                stroke="#3B82F6" 
-                strokeWidth={3}
-                dot={{ fill: '#3B82F6', strokeWidth: 2, r: 5 }}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+          <div className="h-80 flex items-center justify-center">
+            <div className="text-center space-y-4">
+              <div className="text-2xl font-bold text-muted-foreground">📊</div>
+              <div className="text-muted-foreground">Chart akan segera tersedia</div>
+              <div className="grid grid-cols-3 gap-4 mt-6">
+                {data.slice(0, 3).map((item, index) => (
+                  <div key={index} className="text-center p-3 bg-muted/50 rounded-lg">
+                    <div className="text-xs text-muted-foreground">{item.month}</div>
+                    <div className="text-sm font-medium text-emerald-600">
+                      {new Intl.NumberFormat('id-ID', {
+                        style: 'currency',
+                        currency: 'IDR',
+                        notation: 'compact',
+                        maximumFractionDigits: 0,
+                      }).format(item.balance)}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </CardContent>
       </Card>
     </motion.div>

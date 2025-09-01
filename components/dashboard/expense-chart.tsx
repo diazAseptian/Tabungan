@@ -103,35 +103,33 @@ export function ExpenseChart({ userId }: ExpenseChartProps) {
           <CardTitle>Pengeluaran per Kategori</CardTitle>
         </CardHeader>
         <CardContent>
-          <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
-              <Pie
-                data={data}
-                cx="50%"
-                cy="50%"
-                labelLine={false}
-                outerRadius={80}
-                fill="#8884d8"
-                dataKey="value"
-                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-              >
-                {data.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
+          <div className="h-80 flex items-center justify-center">
+            <div className="text-center space-y-4">
+              <div className="text-2xl font-bold text-muted-foreground">🍰</div>
+              <div className="text-muted-foreground">Chart akan segera tersedia</div>
+              <div className="space-y-2 mt-6">
+                {data.slice(0, 4).map((item, index) => (
+                  <div key={index} className="flex items-center justify-between p-2 bg-muted/50 rounded">
+                    <div className="flex items-center space-x-2">
+                      <div 
+                        className="w-3 h-3 rounded-full"
+                        style={{ backgroundColor: item.color }}
+                      />
+                      <span className="text-sm">{item.name}</span>
+                    </div>
+                    <span className="text-sm font-medium">
+                      {new Intl.NumberFormat('id-ID', {
+                        style: 'currency',
+                        currency: 'IDR',
+                        notation: 'compact',
+                        maximumFractionDigits: 0,
+                      }).format(item.value)}
+                    </span>
+                  </div>
                 ))}
-              </Pie>
-              <Tooltip 
-                formatter={(value: number) => [
-                  new Intl.NumberFormat('id-ID', {
-                    style: 'currency',
-                    currency: 'IDR',
-                    minimumFractionDigits: 0,
-                  }).format(value),
-                  'Jumlah'
-                ]}
-              />
-              <Legend />
-            </PieChart>
-          </ResponsiveContainer>
+              </div>
+            </div>
+          </div>
         </CardContent>
       </Card>
     </motion.div>
