@@ -105,14 +105,14 @@ export function TransactionForm({
       };
 
       if (isEdit) {
-        const { error } = await supabase
+        const { error } = await (supabase as any)
           .from(type === 'income' ? 'income' : 'expenses')
           .update(payload)
           .eq('id', transaction.id);
         
         if (error) throw error;
       } else {
-        const { error } = await supabase
+        const { error } = await (supabase as any)
           .from(type === 'income' ? 'income' : 'expenses')
           .insert(payload);
         
